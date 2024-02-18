@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Couples Ring</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Protest+Riot&display=swap" rel="stylesheet">
+    <style>
+ 
+        h1{
+            color: aliceblue;
+            font-family: "Protest Riot", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 3.8rem;
+        }
+        html{
+            overflow: hidden;
+            
+        }
+        .container{
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .buttons{
+            margin-top: 10vh;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .ringButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 20px;
+            width: 150px;
+        }
+
+        #statusMessage {
+            margin-top: 20px;
+        }
+        @media only screen and (max-width: 600px) {
+            body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 10px;
+            overflow: hidden;
+            background-image: url("/imgs/wall-1.png");
+        }
+        .container{
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .buttons{
+            margin-top: 10vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ringButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 20px;
+            width: 150px;
+        }
+
+    
+}
+    </style>
+</head>
+<body>
+   
+
+    <div class="container">
+        <h1>Couples Ring</h1>
+        <div class="buttons">
+            <button class="ringButton" onclick="ringPartner(1)">Text-me</button>
+            <button class="ringButton" onclick="ringPartner(2)">Call-me</button>
+            <button class="ringButton" onclick="ringPartner(3)">Wake-up</button>
+            <button class="ringButton" onclick="ringPartner(4)">Angry</button>
+        </div>
+   
+    </div>
+
+
+    <div id="statusMessage"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        function ringPartner(soundNumber) {
+            // Emit the ringPartner event with the selected sound number
+            socket.emit('ringPartner', { soundNumber });
+        }
+
+        // Listen for the partnerRinging event
+        socket.on('partnerRinging', (data) => {
+            displayStatusMessage(`Ring signal received from your partner! Sound ${data.soundNumber}`);
+            
+            // Create an audio element for the alert sound
+            const alertSound = new Audio(data.soundUrl);
+            alertSound.play();
+        });
+
+        function displayStatusMessage(message) {
+            document.getElementById('statusMessage').innerText = message;
+            setTimeout(() => {
+                document.getElementById('statusMessage').innerText = '';
+            }, 3000); // Clear the message after 3 seconds
+        }
+    </script>
+</body>
+</html>
